@@ -1,4 +1,5 @@
 #pragma once
+
 #include <JuceHeader.h>
 
 class Processor : public juce::AudioProcessor
@@ -43,6 +44,7 @@ public:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void addParameters(juce::AudioProcessorValueTreeState::ParameterLayout& layout);
     void processParameters();
+    void handleMidiMessage(const MidiMessage& message);
 private:
 
     enum
@@ -62,5 +64,4 @@ private:
                               juce::dsp::Reverb, juce::dsp::Gain<float>> processorChain;
     
     juce::dsp::Reverb::Parameters reverbParams;
-    juce::Reverb reverb;
 };

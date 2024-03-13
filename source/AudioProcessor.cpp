@@ -20,10 +20,6 @@ Processor::Processor() : juce::AudioProcessor (BusesProperties().withInput("Inpu
     chorus.setMix(0.5f);
     chorus.setRate(20.0f);
 
-    // auto& delay = processorChain.template get<delayIndex>();
-    // delay.setDelay(512.0f);
-    // delay.setMaximumDelayInSamples(1024.0f);
-    
     auto& reverb = processorChain.template get<reverbIndex>();
     reverbParams.roomSize = 1.0f;
     reverbParams.damping = 0.5f; 
@@ -81,8 +77,7 @@ double Processor::getTailLengthSeconds() const
 
 int Processor::getNumPrograms()
 {
-    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
+    return 1;
 }
 
 int Processor::getCurrentProgram()
@@ -105,8 +100,6 @@ void Processor::changeProgramName (int index, const juce::String& newName)
 
 void Processor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -135,7 +128,7 @@ bool Processor::isBusesLayoutSupported (const BusesLayout& layouts) const
 
 bool Processor::hasEditor() const
 {
-    return false; // (change this to false if you choose to not supply an editor)
+    return false;
 }
 
 juce::AudioProcessorEditor* Processor::createEditor()
@@ -145,15 +138,10 @@ juce::AudioProcessorEditor* Processor::createEditor()
 
 void Processor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
 }
 
 void Processor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
 }
 
 void Processor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -252,7 +240,20 @@ void Processor::addParameters(juce::AudioProcessorValueTreeState::ParameterLayou
 
 }
 
-void Processor::processParameters()
+void Processor::handleMidiMessage(const MidiMessage& message)
 {
+    if (message.isController())
+    {
+        auto controllerNumber = message.getControllerNumber();
+        auto controllerValue = message.getControllerValue();
 
+        switch (controllerNumber)
+        {
+            case 1: // Example: Compressor Attack
+                treeState.getParameter("COMPRESSORATTACK")->setValueNotifyingHost(controllerValue / 127.0f);
+                DBG(controllerValue);
+                break;
+            // Add more cases for other MIDI CC numbers and parameters
+        }
+    }
 }

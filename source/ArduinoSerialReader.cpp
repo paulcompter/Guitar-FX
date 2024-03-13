@@ -4,8 +4,12 @@
 #include <unistd.h>
 #include <iomanip>
 
-ArduinoSerialReader::ArduinoSerialReader(const char* portName, speed_t baudRate) 
-    : serialPortFd_(-1), portName_(portName), baudRate_(baudRate), stop_(false)
+ArduinoSerialReader::ArduinoSerialReader(const char* portName, speed_t baudRate, Processor& processor) 
+    :   processorRef(processor), 
+        serialPortFd_(-1), 
+        portName_(portName), 
+        baudRate_(baudRate), 
+        stop_(false) 
 {
     // Open serial port
     serialPortFd_ = open(portName_, O_RDWR | O_NOCTTY);
@@ -42,7 +46,7 @@ void ArduinoSerialReader::serialReadThread()
 {
     // Buffer to store the received bytes (3 MIDI bytes + STOP_BYTE + null terminator)
     unsigned char buffer[4]; 
-    int index = 0;
+    size_t index = 0;
 
     while (!stop_) 
     {
@@ -75,28 +79,12 @@ void ArduinoSerialReader::processArduinoData(unsigned char* data)
 {    
     // Check if the MIDI status byte indicates a Control Change message
     if (data[0] == MIDI_CC_STATUS_BYTE) {
-        // Example: Map potentiometer data to MIDI controller number
-        int controllerNumber = data[MIDI_CC_NUMBER];
-        // Convert potentiometer data to MIDI controller value (0-127)
-        int controllerValue = data[MIDI_VALUE];
-
-        // Construct MIDI Control Change message
-        unsigned char statusByte = 0xB0; // Status byte for Control Change messages
-        unsigned char midiMessage[3] = {statusByte, (unsigned char)controllerNumber, (unsigned char)controllerValue};
         
-        // Print MIDI message for testing
-        for (int i = 0; i < 3; i++) {
-            std::cout << "0x" << std::uppercase << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned int>(midiMessage[i]);
-            if (i < 2) std::cout << " - ";
-            }
-        std::cout << std::endl;
-
-        // Send MIDI message (example: using a MIDI library or interface)
-        // sendMIDIMessage(midiMessage, sizeof(midiMessage));
+        juce::MidiMessage message(data, 3);
+        processorRef.handleMidiMessage(message);
     } 
     else 
     {
-        // Handle unexpected MIDI message
-        std::cerr << "Unexpected MIDI message received" << std::endl;
+        DBG("Unexpected MIDI message received");
     }
 }

@@ -1,14 +1,18 @@
+#pragma once
+
 #include <thread>
 #include <atomic>
 #include <termios.h>
+#include "AudioProcessor.h"
 
 class ArduinoSerialReader
 {
 public:
-    ArduinoSerialReader(const char* portName, speed_t baudRate);
+    ArduinoSerialReader(const char* portName, speed_t baudRate, Processor& processor);
     ~ArduinoSerialReader();
 
 private:
+    Processor& processorRef;
     void serialReadThread();
     void processArduinoData(unsigned char* data);
 

@@ -14,13 +14,9 @@ int main (void)
 
     deviceManager.addAudioCallback(&player);
     deviceManager.initialiseWithDefaultDevices(1,2);
-    ArduinoSerialReader reader("/dev/cu.usbmodem14301", B9600);
-    
-    printf("Press 'q' to quit:\n");
-    while (getchar() != 'q')
-    {
+    ArduinoSerialReader reader("/dev/cu.usbmodem14301", B9600, processor);
 
-    }
+    for (; ;)
 
     deviceManager.removeAudioCallback(&player);
     return 0;
