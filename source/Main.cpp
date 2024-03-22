@@ -15,10 +15,10 @@ int main (void)
 
     player.setProcessor(&processor);
 
-    deviceManager.addAudioCallback(&player);
     deviceManager.initialiseWithDefaultDevices(1,2);
-    ArduinoSerialReader reader("/dev/cu.usbmodem14301", B9600, processor);
 
+    deviceManager.addAudioCallback(&player);
+    ArduinoSerialReader reader("/dev/ttyACM0", B9600, processor);
     for (; ;){};
 
     deviceManager.removeAudioCallback(&player);
