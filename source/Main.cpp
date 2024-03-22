@@ -1,11 +1,14 @@
-#include <juce_core/juce_core.h>
+/*
+    Written by Paul Compter, 10-03-2024
+*/
+
+#include <JuceHeader.h>
 #include "AudioProcessor.h"
 #include "ArduinoSerialReader.h"
 
 int main (void)
 {
     ScopedJuceInitialiser_GUI initialiser;
-
     juce::AudioDeviceManager deviceManager;
     Processor processor;
     juce::AudioProcessorPlayer player;
@@ -16,7 +19,7 @@ int main (void)
     deviceManager.initialiseWithDefaultDevices(1,2);
     ArduinoSerialReader reader("/dev/cu.usbmodem14301", B9600, processor);
 
-    for (; ;)
+    for (; ;){};
 
     deviceManager.removeAudioCallback(&player);
     return 0;
