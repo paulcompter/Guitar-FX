@@ -1,6 +1,12 @@
+/*
+    Written by Paul Compter, 12-03-2024
+*/
+
+
 #pragma once
 
 #include <JuceHeader.h>
+#include "CustomDelay.h"
 
 class Processor : public juce::AudioProcessor
 {
@@ -45,6 +51,7 @@ public:
     void addParameters(juce::AudioProcessorValueTreeState::ParameterLayout& layout);
     void processParameters();
     void handleMidiMessage(const MidiMessage& message);
+    
 private:
 
     enum
@@ -52,7 +59,7 @@ private:
         compressorIndex,
         gainIndex,
         chorusIndex,
-        /*delayIndex,*/
+        delayIndex,
         reverbIndex,
         masterGainIndex
     };
@@ -60,7 +67,7 @@ private:
     juce::AudioProcessorValueTreeState treeState;
 
     juce::dsp::ProcessorChain<juce::dsp::Compressor<float>, juce::dsp::Gain<float>,
-                              juce::dsp::Chorus<float>, /*juce::dsp::DelayLine<float>,*/
+                              juce::dsp::Chorus<float>, Delay<float>,
                               juce::dsp::Reverb, juce::dsp::Gain<float>> processorChain;
     
     juce::dsp::Reverb::Parameters reverbParams;

@@ -1,3 +1,7 @@
+/*
+    Written by Paul Compter, 10-03-2024
+*/
+
 #pragma once
 
 #include <thread>
@@ -15,6 +19,9 @@ private:
     Processor& processorRef;
     void serialReadThread();
     void processArduinoData(unsigned char* data);
+    void prepare();
+
+    unsigned char serialBuffer[4];
 
     int serialPortFd_;
     const char* portName_;
