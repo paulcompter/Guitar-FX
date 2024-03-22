@@ -1,8 +1,10 @@
+/*
+    Written by Paul Compter, 10-03-2024
+*/
+
 #include "ArduinoSerialReader.h"
-#include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
-#include <iomanip>
 
 ArduinoSerialReader::ArduinoSerialReader(const char* portName, speed_t baudRate, Processor& processor) 
     :   processorRef(processor), 
